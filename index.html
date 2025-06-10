@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>3D Solar System Simulation</title>
+<style>
+  body { margin: 0; overflow: hidden; font-family: sans-serif; }
+  canvas { display: block; }
+  #controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    /* padding: 10px; */
+    border-radius: 5px;
+  }w
+  #controls label {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8em;
+  }
+  #controls button {
+    display: block;
+    margin-top: 10px;
+  }
+    #tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: none;
+    font-size: 0.8em;
+  }
+  
+  body.light-mode {
+    background: #fff;
+    color: #000;
+  } 
+  body.light-mode #controls {
+    background: rgba(255,255,255,0.8);
+    color: #000;
+  }
+</style>
+</head>
+<body>
+<div id="controls"></div>
+<div id="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
