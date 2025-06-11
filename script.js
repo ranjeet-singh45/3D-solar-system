@@ -5,6 +5,7 @@ const defaultSpeeds = {};
 let selectedPlanet = null;
 let paused = false;
 let tooltip, raycaster, mouse;
+let infoCard; // Info card element
 
 const planetData = [
     { name: "Mercury", distance: 13, size: 1.2, color: 0xaaaaaa, speed: 0.02 },
@@ -163,6 +164,24 @@ function init() {
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
 
+    // Info card
+    infoCard = document.createElement('div');
+    infoCard.style.position = 'fixed';
+    infoCard.style.display = 'none';
+    infoCard.style.padding = '8px';
+    infoCard.style.background = 'violet';
+    infoCard.style.color = 'black';
+    infoCard.style.borderRadius = '5px';
+    infoCard.style.top = '50px';
+    infoCard.style.right = '50px';
+    infoCard.style.minWidth = '120px';
+    infoCard.style.fontSize = '14px';
+    infoCard.style.zIndex = '10';
+    document.body.appendChild(infoCard);
+
+    // Asteroid belt
+    createAsteroidBelt(40, 50, 100);
+
     // Events
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('click', onMouseClick);
@@ -183,6 +202,20 @@ function createOrbitPath(radius) {
     return new THREE.LineLoop(geometry, material);
 }
 
+function createAsteroidBelt(innerRadius, outerRadius, count) {
+    const geometry = new THREE.SphereGeometry(0.2, 8, 8);
+    const material = new THREE.MeshStandardMaterial({ color: 0x888888 });
+    for (let i = 0; i < count; i++) {
+        const asteroid = new THREE.Mesh(geometry, material);
+        const angle = Math.random() * Math.PI * 2;
+        const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
+        asteroid.position.x = distance * Math.cos(angle);
+        asteroid.position.z = distance * Math.sin(angle);
+        asteroid.position.y = (Math.random() - 0.5) * 2;
+        scene.add(asteroid);
+    }
+}
+
 function addBackgroundStars() {
     const starGeometry = new THREE.BufferGeometry();
     const starCount = 3000;
@@ -191,7 +224,7 @@ function addBackgroundStars() {
         positions.push((Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000);
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff});
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
     scene.add(new THREE.Points(starGeometry, starMaterial));
 }
 
@@ -213,10 +246,22 @@ function onMouseClick(event) {
         const offset = new THREE.Vector3(0, 5, 10);
         camera.position.copy(selectedPlanet.position.clone().add(offset));
         camera.lookAt(selectedPlanet.position);
+
+        // Show planet info
+        const data = planetData.find(p => p.name === selectedPlanet.userData.name);
+        infoCard.innerHTML = `
+            <strong>${data.name}</strong><br>
+            Distance: ${data.distance}<br>
+            Size: ${data.size}
+        `;
+        infoCard.style.display = 'block';
     } else {
         selectedPlanet = null;
         camera.position.set(10, 100, 160);
         camera.lookAt(-10, 0, 0);
+
+        // Hide planet info
+        infoCard.style.display = 'none';
     }
 }
 
@@ -242,12 +287,13 @@ function animate() {
             planet.userData.angle += speed * delta * 60;
             planet.position.x = planet.userData.distance * Math.cos(planet.userData.angle);
             planet.position.z = planet.userData.distance * Math.sin(planet.userData.angle);
-            if (selectedPlanet === planet) {
-                planet.rotation.y += 0.02;
-            }
+
+            // Subtle rotation on own axis
+            planet.rotation.y += 0.01;
         });
     }
 
+    // Tooltip logic
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(planets);
     if (intersects.length > 0) {
