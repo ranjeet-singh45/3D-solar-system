@@ -7,14 +7,14 @@ let paused = false;
 let tooltip, raycaster, mouse;
 
 const planetData = [
-    { name: "Mercury", distance: 15, size: 1, color: 0xaaaaaa, speed: 0.02 },
-    { name: "Venus", distance: 20, size: 1.5, color: 0xffcc66, speed: 0.015 },
-    { name: "Earth", distance: 25, size: 2, color: 0x3399ff, speed: 0.01 },
-    { name: "Mars", distance: 30, size: 2.5, color: 0xff3300, speed: 0.008 },
-    { name: "Jupiter", distance: 35, size: 3, color: 0xff9966, speed: 0.006 },
-    { name: "Saturn", distance: 45, size: 3.5, color: 0xffcc99, speed: 0.005 },
-    { name: "Uranus", distance: 55, size: 4, color: 0x66ccff, speed: 0.004 },
-    { name: "Neptune", distance: 70, size: 4.5, color: 0x3366ff, speed: 0.003 }
+    { name: "Mercury", distance: 13, size: 1.2, color: 0xaaaaaa, speed: 0.02 },
+    { name: "Venus", distance: 20, size: 1.7, color: 0xffcc66, speed: 0.015 },
+    { name: "Earth", distance: 27, size: 2.2, color: 0x3399ff, speed: 0.01 },
+    { name: "Mars", distance: 35, size: 2.8, color: 0xff3300, speed: 0.008 },
+    { name: "Jupiter", distance: 43, size: 3.4, color: 0xff9966, speed: 0.006 },
+    { name: "Saturn", distance: 52, size: 4, color: 0xffcc99, speed: 0.005 },
+    { name: "Uranus", distance: 62, size: 4.7, color: 0x66ccff, speed: 0.004 },
+    { name: "Neptune", distance: 75, size: 5.5, color: 0x3366ff, speed: 0.003 }
 ];
 
 const clock = new THREE.Clock();
@@ -28,8 +28,8 @@ function init() {
     // Scene & camera
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-    camera.position.set(10, 80, 130);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(10, 100, 160);
+    camera.lookAt(-10, 0, 0);
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -70,6 +70,9 @@ function init() {
         // Controls: label, slider, numeric value
         const label = document.createElement('label');
         label.style.display = 'flex';
+        label.style.backgroundColor = 'violet';
+        label.style.borderRadius = '5px';
+        label.style.color = 'black';
         label.style.alignItems = 'center';
         label.style.marginBottom = '4px';
         label.textContent = `${data.name} Speed: `;
@@ -97,6 +100,8 @@ function init() {
 
     // Reset speeds button
     const resetBtn = document.createElement('button');
+    resetBtn.style.cursor = 'pointer';
+    resetBtn.style.backgroundColor = 'green';
     resetBtn.textContent = 'Reset Speeds';
     resetBtn.style.marginTop = '8px';
     resetBtn.onclick = () => {
@@ -119,9 +124,10 @@ function init() {
     pauseBtn.style.border = 'none';
     pauseBtn.style.background = 'transparent';
     pauseBtn.style.cursor = 'pointer';
-    pauseBtn.title = 'Pause/Resume';
-    const playIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><polygon points="6,4 20,12 6,20" /></svg>`;
-    const pauseIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+    pauseBtn.style.border = 'solid black';
+    pauseBtn.title = 'Pause';
+    const playIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="white"><polygon points="6,4 20,12 6,20" /></svg>`;
+    const pauseIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
     pauseBtn.innerHTML = pauseIcon;
     pauseBtn.onclick = () => {
         paused = !paused;
@@ -133,17 +139,19 @@ function init() {
     const toggleBtn = document.createElement('button');
     toggleBtn.style.width = '40px';
     toggleBtn.style.height = '40px';
+    toggleBtn.style.marginTop = '-40px';
+    toggleBtn.style.marginLeft = '45px';
     toggleBtn.style.border = 'none';
     toggleBtn.style.background = 'transparent';
     toggleBtn.style.cursor = 'pointer';
+    toggleBtn.style.border = 'solid black';
     toggleBtn.title = 'Toggle Dark/Light Mode';
-    const sunIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="orange"><circle cx="12" cy="12" r="5" /><g stroke="orange" stroke-width="2"><line x1="12" y1="1" x2="12" y2="4" /><line x1="12" y1="20" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="6.34" y2="6.34" /><line x1="17.66" y1="17.66" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="4" y2="12" /><line x1="20" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="6.34" y2="17.66" /><line x1="17.66" y1="6.34" x2="19.78" y2="4.22" /></g></svg>`;
-    const moonIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="lightgray"><path d="M21 12.79A9 9 0 0112.21 3a7 7 0 009 9.79z" /></svg>`;
+    const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="orange"><circle cx="12" cy="12" r="5" /><g stroke="orange" stroke-width="2"><line x1="12" y1="1" x2="12" y2="4" /><line x1="12" y1="20" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="6.34" y2="6.34" /><line x1="17.66" y1="17.66" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="4" y2="12" /><line x1="20" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="6.34" y2="17.66" /><line x1="17.66" y1="6.34" x2="19.78" y2="4.22" /></g></svg>`;
+    const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" fill="black"><path d="M21 12.79A9 9 0 0112.21 3a7 7 0 009 9.79z" /></svg>`;
     toggleBtn.innerHTML = sunIcon;
     toggleBtn.onclick = () => {
         const isLight = document.body.classList.toggle('light-mode');
         toggleBtn.innerHTML = isLight ? moonIcon : sunIcon;
-        toggleBtn.style.border = 'solid black';
     };
     controls.appendChild(toggleBtn);
 
@@ -177,13 +185,13 @@ function createOrbitPath(radius) {
 
 function addBackgroundStars() {
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = 1000;
+    const starCount = 3000;
     const positions = [];
     for (let i = 0; i < starCount; i++) {
         positions.push((Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000, (Math.random() - 0.5) * 2000);
     }
     starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff});
     scene.add(new THREE.Points(starGeometry, starMaterial));
 }
 
@@ -207,8 +215,8 @@ function onMouseClick(event) {
         camera.lookAt(selectedPlanet.position);
     } else {
         selectedPlanet = null;
-        camera.position.set(0, 100, 150);
-        camera.lookAt(0, 0, 0);
+        camera.position.set(10, 100, 160);
+        camera.lookAt(-10, 0, 0);
     }
 }
 
@@ -245,6 +253,9 @@ function animate() {
     if (intersects.length > 0) {
         const planet = intersects[0].object;
         tooltip.style.display = 'block';
+        tooltip.style.backgroundColor = 'violet';
+        tooltip.style.color = 'black';
+        tooltip.style.borderRadius = '5px';
         tooltip.style.left = `${mouseScreenX + 5}px`;
         tooltip.style.top = `${mouseScreenY + 5}px`;
         tooltip.textContent = planet.userData.name;
